@@ -18,13 +18,9 @@
 //and since realloc can move shit randomly we gotta have like a W base point thats why we pass the adress
 //C is pass by value, when you hand it into the function you pass it as a private independant copy
 //
+//create my own sorting thing? or look at different algorihms 
 
 
-typedef struct {
-    char fdir[PATH_MAX_LEN];
-    char * fname;
-
-}filepl;
 
 void print_filepl (filepl *nicebor){
     char *dir = nicebor->fdir;
@@ -61,19 +57,16 @@ int froerty(const filepl fullfile)
 
 
     while((entry = readdir(dir))!=NULL){
-         const char *name = entry->d_name;
+         char *name = entry->d_name;
 
         // this skips the bs that posix just spawns for no reason
         if (strcmp(name,".")==0|| strcmp(name, "..")==0)
             continue;
-        // probably put this as a case acuallty maybe not since 
+
         if (entry ->d_type == DT_DIR) {
-            //printf("Dir => %-20s\n",name);
             char new_path[PATH_MAX_LEN];
 
             snprintf(new_path, sizeof(new_path),"%s/%s",path,name);
-            //strcpy(path2,path);
-        
             // i think its cause this file is just a static copy?
             
             filepl new_file = {
@@ -82,7 +75,7 @@ int froerty(const filepl fullfile)
             
 
          
-            //print_filepl(&new_file);
+            print_filepl(&new_file);
             froerty(new_file);
         }
         
@@ -90,12 +83,13 @@ int froerty(const filepl fullfile)
         const char *ext = strrchr(name, '.');
        
         char *want = ".mkv";
-       // printf("Inside reg  ext =%s name=%s\n,",ext,name);
-        /* filepl new_file = { */
-        /*         .fname = name */
-        /*     }; */
-        // need to make check_file ext accept struct 
-        check_file_ext(ext,name,want,&good_files,&file_cnt);
+
+        filepl new_file = {
+                .fname = name
+            };
+
+
+        check_file_ext(ext,new_file,want,&good_files,&file_cnt);
     }
 
 }
